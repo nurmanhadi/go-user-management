@@ -51,6 +51,7 @@ func Initialize(deps *Bootstrap) {
 
 	// subcriber
 	userSub := subscriber.NewUserSubscriber(deps.Ch, deps.Logger, userServ)
-	userSub.UserQueue()
+	userSub.UserRegistered()
+	userSub.UserAvatar()
 
 }

@@ -28,7 +28,9 @@ func NewUserService(logger zerolog.Logger, validator *validator.Validate, userRe
 		userRepository: userRepository,
 	}
 }
-func (s *UserService) UserCreate(payload *dto.EventUserPayload) error {
+
+// message queue
+func (s *UserService) UserCreate(payload *dto.EventUserPayload[dto.EventUserData]) error {
 	if err := s.validator.Struct(payload); err != nil {
 		s.logger.Warn().Err(err).Msg("failed to validate request")
 		return err
@@ -45,6 +47,30 @@ func (s *UserService) UserCreate(payload *dto.EventUserPayload) error {
 	s.logger.Info().Str("event", payload.Event).Msg("user create success")
 	return nil
 }
+func (s *UserService) UserUpdateAvatar(payload *dto.EventUserPayload[dto.EventUserAvatar]) error {
+	if err := s.validator.Struct(payload); err != nil {
+		s.logger.Warn().Err(err).Msg("failed to validate request")
+		return err
+	}
+	user, err := s.userRepository.FindById(payload.Data.UserId)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			s.logger.Warn().Err(err).Msg("user not found")
+			return response.Except(http.StatusNotFound, "user not found")
+		}
+		s.logger.Error().Err(err).Msg("failed find by id to database")
+		return err
+	}
+	user.AvatarURL = &payload.Data.AvatarUrl
+	if err := s.userRepository.Save(user); err != nil {
+		s.logger.Error().Err(err).Msg("failed save to database")
+		return err
+	}
+	s.logger.Info().Str("user_id", strconv.Itoa(int(payload.Data.UserId))).Msg("user update avatar success")
+	return nil
+}
+
+// api
 func (s *UserService) UserChangeProfile(id string, request *dto.UserUpdateRequest) error {
 	if err := s.validator.Struct(request); err != nil {
 		s.logger.Warn().Err(err).Msg("failed to validate request")

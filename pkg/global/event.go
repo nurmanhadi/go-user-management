@@ -1,5 +1,6 @@
 package global
 
 const (
-	EventUserQueue = "user.queue"
+	EventUserRegistered = "user.registered"
+	EventUserAvatar     = "user.avatar"
 )

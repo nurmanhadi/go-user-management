@@ -1,0 +1,27 @@
+services:
+  db-user-management:
+    container_name: db-user-management
+    hostname: db-user-management
+    image: docker.io/library/postgres:18
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGDATA: /var/lib/postgresql/18/docker
+    volumes:
+      - pg-data:/var/lib/postgresql
+
+  cache-user-management:
+    container_name: cache-user-management
+    hostname: cache-user-management
+    image: docker.io/library/memcached:latest
+    ports:
+      - "11212:11211"
+    command:
+      - --conn-limit=1024
+      - --memory-limit=64
+      - --threads=4
+volumes:
+  pg-data:

@@ -1,32 +1,52 @@
-# AUTH MANAGEMENT
+# User Management Service
 
-Service for authentication management for microservices architecture.
+A robust user management microservice built with Go for handling user registration, profile management, and authentication in a microservices architecture.
 
 ## Tech Stack
 
-- **Language:** Go
-- **Database:** PostgreSQL
+- **Language:** Go 1.21+
+- **Database:** PostgreSQL 15+
 - **Cache:** Memcached
 - **Message Broker:** LavinMQ / RabbitMQ
-- **Containerization:** Docker
+- **Containerization:** Docker & Docker Compose
 - **Orchestration:** Kubernetes
 
-## Environment Variables
+## Prerequisites
+
+- Go 1.21 or higher
+- Docker & Docker Compose
+- PostgreSQL 15+
+- Memcached
+- LavinMQ or RabbitMQ
+
+## Quick Start
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/nurmanhadi/go-auth-management.git
+cd auth-management
+```
+
+### 2. Configure Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` with your configuration:
 
 ```bash
 # Database Configuration
 DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=auth
-DB_PASSWORD=auth
-DB_NAME=auth_management
-
-# JWT Configuration
-JWT_SECRET=aksjmkjdkfiaosjkdjsdoquwqiw
+DB_PORT=5433
+DB_USERNAME=user
+DB_PASSWORD=user
+DB_NAME=user_management
 
 # Cache Configuration
 CACHE_HOST=localhost
-CACHE_PORT=11211
+CACHE_PORT=11212
 
 # Message Broker Configuration
 BROKER_HOST=localhost
@@ -34,172 +54,125 @@ BROKER_PORT=5672
 BROKER_USERNAME=guest
 BROKER_PASSWORD=guest
 BROKER_VHOST=someone
-
-# OpenTelemetry Configuration
-OTLP_HOST=localhost
-OTLP_PORT=4317
 ```
 
-## API Documentation
+### 3. Start Services with Docker Compose
 
-### 1. User Registration
-
-**Endpoint:** `POST /api/auth/register`
-
-**Request Body:**
-```json
-{
-  "username": "test",
-  "password": "test"
-}
-```
-
-**Response Codes:**
-- `201` - Created (User successfully registered)
-- `400` - Bad Request (Invalid input data)
-- `409` - Conflict (Username already exists)
-
----
-
-### 2. User Login
-
-**Endpoint:** `POST /api/auth/login`
-
-**Request Body:**
-```json
-{
-  "username": "test",
-  "password": "test"
-}
-```
-
-**Response Body:**
-```json
-{
-    "data": {
-        {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "refresh_token": "08ca5a94f78c6744",
-        }
-    },
-    "path": "api/auth/login"
-}
-```
-
-**Response Codes:**
-- `200` - OK (Login successful)
-- `400` - Bad Request (Invalid input data)
-- `401` - Unauthorized (Invalid credentials)
-
----
-
-### 3. Refresh Access Token
-
-**Endpoint:** `POST /api/auth/token`
-
-**Request Body:**
-```json
-{
-  "refresh_token": "08ca5a94f78c6744"
-}
-```
-
-**Response Body:**
-```json
-{
-    "data": {
-        {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "refresh_token": "08ca5a94f78c6744",
-        }
-    },
-    "path": "api/auth/token"
-}
-```
-
-**Response Codes:**
-- `200` - OK (Token refreshed successfully)
-- `401` - Unauthorized (Invalid or expired refresh token)
-
----
-
-## Getting Started
-
-### Prerequisites
-- Go 1.21+
-- Docker & Docker Compose
-- PostgreSQL 15+
-- Memcached
-- LavinMQ or RabbitMQ
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/nurmanhadi/go-auth-management.git
-cd auth-management
-```
-
-2. Set up environment variables
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-3. Run with Docker Compose
 ```bash
 docker-compose up -d
 ```
 
-4. Run migrations
+### 4. Run Database Migrations
+
 ```bash
 make migrate-up
 ```
 
-### Development
+## Development
+
+### Run Locally
 
 ```bash
-# Run locally
 go run cmd/main.go
+```
 
-# Run tests
+### Run Tests
+
+```bash
 go test ./...
+```
 
-# Build
+### Build Binary
+
+```bash
 go build -o bin/auth-service cmd/main.go
 ```
 
-## Architecture Flow
+## API Endpoints
 
-### Registration Flow
-1. User sends registration request to `POST /api/auth/register`
-2. Service validates input data
-3. Password is hashed using bcrypt
-4. User data is stored in PostgreSQL database
-5. **Message is published to message broker** (LavinMQ/RabbitMQ) for downstream services (e.g., user id)
-6. Returns 201 Created response
+### Update User Profile
 
-### Login Flow
-1. User sends login credentials to `POST /api/auth/login`
-2. Service validates credentials against database
-3. If valid, generates JWT access token and refresh token
-4. **Refresh token is stored in Memcached** with TTL (Time To Live)
-5. Returns access token and refresh token to client
+**Endpoint:** `PUT /api/users/{id}`
 
-### Token Refresh Flow
-1. Client sends refresh token to `POST /api/auth/token`
-2. Service validates refresh token from Memcached
-3. If valid, generates new access token
-4. Returns new access token to client
+**Request Body:**
 
-## Message Broker Events
+```json
+{
+  "first_name": "testing",
+  "last_name": "testing juga",
+  "email": "test@gmail.com",
+  "phone": "085734621178",
+  "gender": "male",
+  "bio": "testing",
+  "description": "test",
+  "birth_date": "2002-11-12"
+}
+```
+
+**Response Codes:**
+- `200` - OK (User profile updated successfully)
+- `400` - Bad Request (Invalid input data)
+- `404` - Not Found (User not found)
+- `409` - Conflict (Email or phone already exists)
+
+### Get User by Username
+
+**Endpoint:** `GET /api/users/{username}`
+
+**Response Body:**
+
+```json
+{
+  "data": {
+    "id": 3,
+    "auth_id": "29c8d0b6-737b-494e-b8f5-934e64dd7ea7",
+    "username": "test12",
+    "name": {
+      "first_name": null,
+      "last_name": null
+    },
+    "contact": {
+      "email": null,
+      "phone": null
+    },
+    "about": {
+      "bio": null,
+      "description": null,
+      "birth_date": null,
+      "gender": null
+    },
+    "verification": {
+      "email_verified_at": null,
+      "phone_verified_at": null
+    },
+    "avatar_url": null,
+    "created_at": "2025-11-13T22:49:49.549084+07:00",
+    "updated_at": "2025-11-13T22:49:49.562617+07:00"
+  },
+  "path": "/api/users/test12"
+}
+```
+
+**Response Codes:**
+- `200` - OK (User found and returned)
+- `404` - Not Found (User not found)
+- `500` - Internal Server Error
+
+## Event-Driven Architecture
 
 ### Published Events
 
-#### `user.registered`
-Published when a new user successfully registers.
+The service publishes events to the message broker for other microservices to consume.
+
+#### User Registered Event
+
+**Event Name:** `user.registered`  
+**Queue:** `user.registered`
+
+Triggered when a new user successfully registers.
 
 **Payload:**
+
 ```json
 {
   "event": "user.registered",
@@ -212,38 +185,62 @@ Published when a new user successfully registers.
 }
 ```
 
-**Exchange:** `auth.exchange`  
-**Routing Key:** `user.registered`
+#### User Avatar Updated Event
 
-## Cache Strategy
+**Event Name:** `user.avatar`  
+**Queue:** `user.avatar`
 
-### Refresh Token Storage
-- **Key Pattern:** `refresh:{token_value}`
-- **Value:** User ID or session data (JSON)
-- **TTL:** 7 days (configurable)
-- **Purpose:** Fast validation and session management
+Triggered when a user's avatar is uploaded or updated.
 
-### Cache Invalidation
-- Refresh tokens are automatically expired after TTL
-- Manual invalidation on logout (if implemented)
-- Token rotation on refresh
+**Payload:**
+
+```json
+{
+  "event": "user.avatar",
+  "timestamp": "2025-11-12T10:30:00Z",
+  "data": {
+    "user_id": 1,
+    "avatar_url": "http://something"
+  }
+}
+```
 
 ## Security Considerations
 
-- Store `JWT_SECRET` securely (use secrets management in production)
-- Use strong passwords for database and broker
 - Enable TLS/SSL for production deployments
-- Implement rate limiting on authentication endpoints
-- Use secure password hashing (bcrypt recommended)
-- Set appropriate TTL for refresh tokens in cache
-- Implement token rotation strategy
 - Use HTTPS for all API endpoints
+- Validate and sanitize all user inputs
+- Implement rate limiting on authentication endpoints
+- Use environment variables for sensitive configuration (API keys, database credentials)
+- Implement proper authentication and authorization mechanisms
+- Enable CORS only for trusted domains in production
+- Keep dependencies updated regularly
+
+## Project Structure
+
+```
+.
+├── cmd/
+│   └── main.go
+├── internal/
+│   ├── api/
+│   ├── service/
+│   ├── repository/
+│   └── models/
+├── docker-compose.yml
+├── Dockerfile
+├── Makefile
+├── go.mod
+├── go.sum
+└── README.md
+```
 
 ## License
 
 This project is licensed under the MIT License.
 
 ## Author
+
 **Nurman Hadi**  
 Backend Developer (Golang, Microservices)  
-GitHub: [nurmanhadi](https://github.com/nurmanhadi)
+GitHub: [@nurmanhadi](https://github.com/nurmanhadi)

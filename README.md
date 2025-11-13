@@ -24,8 +24,8 @@ A robust user management microservice built with Go for handling user registrati
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/nurmanhadi/go-auth-management.git
-cd auth-management
+git clone https://github.com/nurmanhadi/go-user-management.git
+cd user-management
 ```
 
 ### 2. Configure Environment Variables
@@ -85,7 +85,7 @@ go test ./...
 ### Build Binary
 
 ```bash
-go build -o bin/auth-service cmd/main.go
+go build -o bin/user-service cmd/main.go
 ```
 
 ## API Endpoints
@@ -160,9 +160,9 @@ go build -o bin/auth-service cmd/main.go
 
 ## Event-Driven Architecture
 
-### Published Events
+### Subscribed Events
 
-The service publishes events to the message broker for other microservices to consume.
+The service subscribes to events from the message broker published by other microservices.
 
 #### User Registered Event
 

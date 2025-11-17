@@ -150,21 +150,21 @@ func (s *UserService) UserGetByUsername(username string) (*dto.UserResponse, err
 		ID:       user.ID,
 		AuthID:   user.AuthID,
 		Username: user.Username,
-		Name: &dto.Username{
+		Name: dto.Username{
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 		},
-		Contact: &dto.UserContact{
+		Contact: dto.UserContact{
 			Email: user.Email,
 			Phone: user.Phone,
 		},
-		About: &dto.UserAbout{
+		About: dto.UserAbout{
 			Bio:         user.Bio,
 			Description: user.Description,
 			BirthDate:   user.BirthDate,
 			Gender:      user.Gender,
 		},
-		Verification: &dto.UserVerification{
+		Verification: dto.UserVerification{
 			EmailVerifiedAt: user.EmailVerifiedAt,
 			PhoneVerifiedAt: user.PhoneVerifiedAt,
 		},

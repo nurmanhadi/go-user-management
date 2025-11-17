@@ -193,7 +193,7 @@ func (s *UserService) UserGetById(id string) (*dto.UserMinimalResponse, error) {
 	resp := &dto.UserMinimalResponse{
 		ID:       user.ID,
 		Username: user.Username,
-		Name: &dto.Username{
+		Name: dto.Username{
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 		},

@@ -30,7 +30,7 @@ type UserResponse struct {
 type UserMinimalResponse struct {
 	ID        int64     `json:"id"`
 	Username  string    `json:"username"`
-	Name      *Username `json:"name"`
+	Name      Username `json:"name"`
 	AvatarURL *string   `json:"avatar_url"`
 }
 type UserCountResponse struct {

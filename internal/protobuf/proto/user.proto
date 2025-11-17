@@ -1,0 +1,47 @@
+syntax = "proto3";
+package user;
+option go_package = "/pb";
+import "google/protobuf/timestamp.proto";
+
+service UserService {
+  rpc GetUserById(GetUserRequest) returns (UserResponse);
+}
+
+message GetUserRequest {
+  int64 user_id = 1;
+}
+
+message UserResponse {
+  int64 id = 1;
+  string auth_id = 2;
+  string username = 3;
+  UserNameInfo name = 4;
+  UserContactInfo contact = 5;
+  UserAboutInfo about = 6;
+  UserVerificationInfo verification = 7;
+  string avatar_url = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message UserNameInfo {
+  string first_name = 1;
+  string last_name = 2;
+}
+
+message UserContactInfo {
+  string email = 1;
+  string phone = 2;
+}
+
+message UserAboutInfo {
+  string bio = 1;
+  string description = 2;
+  google.protobuf.Timestamp birth_date = 3;
+  string gender = 4;
+}
+
+message UserVerificationInfo {
+  google.protobuf.Timestamp email_verified_at = 1;
+  google.protobuf.Timestamp phone_verified_at = 2;
+}

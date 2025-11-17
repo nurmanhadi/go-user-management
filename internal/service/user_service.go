@@ -175,8 +175,13 @@ func (s *UserService) UserGetByUsername(username string) (*dto.UserResponse, err
 	s.logger.Info().Str("username", username).Msg("user get by username success")
 	return resp, nil
 }
-func (s *UserService) UserGetById(id int64) (*dto.UserResponse, error) {
-	user, err := s.userRepository.FindById(id)
+func (s *UserService) UserGetById(id string) (*dto.UserResponse, error) {
+	newId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed parse string to int64")
+		return nil, err
+	}
+	user, err := s.userRepository.FindById(newId)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			s.logger.Warn().Err(err).Msg("user not found")
@@ -211,6 +216,6 @@ func (s *UserService) UserGetById(id int64) (*dto.UserResponse, error) {
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}
-	s.logger.Info().Str("id", strconv.Itoa(int(id))).Msg("user get by username success")
+	s.logger.Info().Str("id", id).Msg("user get by username success")
 	return resp, nil
 }

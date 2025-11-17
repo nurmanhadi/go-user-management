@@ -16,6 +16,10 @@ func (r *Router) New() {
 		api.Route("/users", func(users chi.Router) {
 			users.Put("/{id}", r.UserHandler.UserChangeProfile)
 			users.Get("/{username}", r.UserHandler.UserGetByUsername)
+
+			users.Route("/services", func(services chi.Router) {
+				services.Get("/{id}", r.UserHandler.UserGetById)
+			})
 		})
 	})
 }

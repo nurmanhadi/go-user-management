@@ -158,6 +158,49 @@ go build -o bin/user-service cmd/main.go
 - `404` - Not Found (User not found)
 - `500` - Internal Server Error
 
+### Service Get User by Id
+
+**Endpoint:** `GET /api/users/services/{id}`
+
+**Response Body:**
+
+```json
+{
+  "data": {
+    "id": 3,
+    "auth_id": "29c8d0b6-737b-494e-b8f5-934e64dd7ea7",
+    "username": "test12",
+    "name": {
+      "first_name": null,
+      "last_name": null
+    },
+    "contact": {
+      "email": null,
+      "phone": null
+    },
+    "about": {
+      "bio": null,
+      "description": null,
+      "birth_date": null,
+      "gender": null
+    },
+    "verification": {
+      "email_verified_at": null,
+      "phone_verified_at": null
+    },
+    "avatar_url": null,
+    "created_at": "2025-11-13T22:49:49.549084+07:00",
+    "updated_at": "2025-11-13T22:49:49.562617+07:00"
+  },
+  "path": "/api/users/test12"
+}
+```
+
+**Response Codes:**
+- `200` - OK (User found and returned)
+- `404` - Not Found (User not found)
+- `500` - Internal Server Error
+
 ## Event-Driven Architecture
 
 ### Subscribed Events

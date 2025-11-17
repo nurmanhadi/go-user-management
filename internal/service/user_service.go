@@ -6,14 +6,12 @@ import (
 	"strings"
 	"time"
 	"user-management/internal/entity"
-	"user-management/internal/protobuf/pb"
 	"user-management/internal/repository"
 	"user-management/pkg/dto"
 	"user-management/pkg/response"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/rs/zerolog"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -177,7 +175,7 @@ func (s *UserService) UserGetByUsername(username string) (*dto.UserResponse, err
 	s.logger.Info().Str("username", username).Msg("user get by username success")
 	return resp, nil
 }
-func (s *UserService) UserGetById(id int64) (*pb.UserResponse, error) {
+func (s *UserService) UserGetById(id int64) (*dto.UserResponse, error) {
 	user, err := s.userRepository.FindById(id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -187,31 +185,31 @@ func (s *UserService) UserGetById(id int64) (*pb.UserResponse, error) {
 		s.logger.Error().Err(err).Msg("failed find by username to database")
 		return nil, err
 	}
-	resp := &pb.UserResponse{
-		Id:       user.ID,
-		AuthId:   user.AuthID,
+	resp := &dto.UserResponse{
+		ID:       user.ID,
+		AuthID:   user.AuthID,
 		Username: user.Username,
-		Name: &pb.UserNameInfo{
-			FirstName: *user.FirstName,
-			LastName:  *user.LastName,
+		Name: &dto.Username{
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
 		},
-		Contact: &pb.UserContactInfo{
-			Email: *user.Email,
-			Phone: *user.Phone,
+		Contact: &dto.UserContact{
+			Email: user.Email,
+			Phone: user.Phone,
 		},
-		About: &pb.UserAboutInfo{
-			Bio:         *user.Bio,
-			Description: *user.Description,
-			BirthDate:   timestamppb.New(*user.BirthDate),
-			Gender:      string(*user.Gender),
+		About: &dto.UserAbout{
+			Bio:         user.Bio,
+			Description: user.Description,
+			BirthDate:   user.BirthDate,
+			Gender:      user.Gender,
 		},
-		Verification: &pb.UserVerificationInfo{
-			EmailVerifiedAt: timestamppb.New(*user.EmailVerifiedAt),
-			PhoneVerifiedAt: timestamppb.New(*user.PhoneVerifiedAt),
+		Verification: &dto.UserVerification{
+			EmailVerifiedAt: user.EmailVerifiedAt,
+			PhoneVerifiedAt: user.PhoneVerifiedAt,
 		},
-		AvatarUrl: *user.AvatarURL,
-		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
+		AvatarURL: user.AvatarURL,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
 	}
 	s.logger.Info().Str("id", strconv.Itoa(int(id))).Msg("user get by username success")
 	return resp, nil

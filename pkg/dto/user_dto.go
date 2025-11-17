@@ -27,6 +27,12 @@ type UserResponse struct {
 	CreatedAt    time.Time         `json:"created_at"`
 	UpdatedAt    time.Time         `json:"updated_at"`
 }
+type UserMinimalResponse struct {
+	ID        int64     `json:"id"`
+	Username  string    `json:"username"`
+	Name      *Username `json:"name"`
+	AvatarURL *string   `json:"avatar_url"`
+}
 type UserCountResponse struct {
 	Total int64 `json:"total"`
 }

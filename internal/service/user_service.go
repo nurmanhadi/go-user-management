@@ -175,7 +175,7 @@ func (s *UserService) UserGetByUsername(username string) (*dto.UserResponse, err
 	s.logger.Info().Str("username", username).Msg("user get by username success")
 	return resp, nil
 }
-func (s *UserService) UserGetById(id string) (*dto.UserResponse, error) {
+func (s *UserService) UserGetById(id string) (*dto.UserMinimalResponse, error) {
 	newId, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		s.logger.Error().Err(err).Msg("failed parse string to int64")
@@ -190,31 +190,14 @@ func (s *UserService) UserGetById(id string) (*dto.UserResponse, error) {
 		s.logger.Error().Err(err).Msg("failed find by id to database")
 		return nil, err
 	}
-	resp := &dto.UserResponse{
+	resp := &dto.UserMinimalResponse{
 		ID:       user.ID,
-		AuthID:   user.AuthID,
 		Username: user.Username,
 		Name: &dto.Username{
 			FirstName: user.FirstName,
 			LastName:  user.LastName,
 		},
-		Contact: &dto.UserContact{
-			Email: user.Email,
-			Phone: user.Phone,
-		},
-		About: &dto.UserAbout{
-			Bio:         user.Bio,
-			Description: user.Description,
-			BirthDate:   user.BirthDate,
-			Gender:      user.Gender,
-		},
-		Verification: &dto.UserVerification{
-			EmailVerifiedAt: user.EmailVerifiedAt,
-			PhoneVerifiedAt: user.PhoneVerifiedAt,
-		},
 		AvatarURL: user.AvatarURL,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
 	}
 	s.logger.Info().Str("id", id).Msg("user get by id success")
 	return resp, nil

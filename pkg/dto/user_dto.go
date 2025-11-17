@@ -27,6 +27,9 @@ type UserResponse struct {
 	CreatedAt    time.Time         `json:"created_at"`
 	UpdatedAt    time.Time         `json:"updated_at"`
 }
+type UserCountResponse struct {
+	Total int64 `json:"total"`
+}
 type Username struct {
 	FirstName *string `json:"first_name"`
 	LastName  *string `json:"last_name"`

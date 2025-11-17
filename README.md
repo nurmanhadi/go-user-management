@@ -192,13 +192,32 @@ go build -o bin/user-service cmd/main.go
     "created_at": "2025-11-13T22:49:49.549084+07:00",
     "updated_at": "2025-11-13T22:49:49.562617+07:00"
   },
-  "path": "/api/users/test12"
+  "path": "/api/users/services/test12"
 }
 ```
 
 **Response Codes:**
 - `200` - OK (User found and returned)
 - `404` - Not Found (User not found)
+- `500` - Internal Server Error
+
+### Service Count User by Id
+
+**Endpoint:** `GET /api/users/services/count/{id}`
+
+**Response Body:**
+
+```json
+{
+  "data": {
+    "total": 1,
+  },
+  "path": "/api/users/services/1"
+}
+```
+
+**Response Codes:**
+- `200` - OK (User found and returned)
 - `500` - Internal Server Error
 
 ## Event-Driven Architecture

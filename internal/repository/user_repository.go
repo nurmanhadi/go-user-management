@@ -50,3 +50,11 @@ func (r *UserRepository) CountByPhone(phone string) (int64, error) {
 	}
 	return count, nil
 }
+func (r *UserRepository) CountById(id int64) (int64, error) {
+	var count int64
+	err := r.db.Model(&entity.User{}).Where("id = ?", id).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

@@ -187,7 +187,7 @@ func (s *UserService) UserGetById(id string) (*dto.UserResponse, error) {
 			s.logger.Warn().Err(err).Msg("user not found")
 			return nil, response.Except(http.StatusNotFound, "user not found")
 		}
-		s.logger.Error().Err(err).Msg("failed find by username to database")
+		s.logger.Error().Err(err).Msg("failed find by id to database")
 		return nil, err
 	}
 	resp := &dto.UserResponse{
@@ -216,6 +216,24 @@ func (s *UserService) UserGetById(id string) (*dto.UserResponse, error) {
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
 	}
-	s.logger.Info().Str("id", id).Msg("user get by username success")
+	s.logger.Info().Str("id", id).Msg("user get by id success")
+	return resp, nil
+}
+func (s *UserService) UserCountById(id string) (*dto.UserCountResponse, error) {
+	newId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed parse string to int64")
+		return nil, err
+	}
+	totalUser, err := s.userRepository.CountById(newId)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed count by id to database")
+		return nil, err
+	}
+
+	resp := &dto.UserCountResponse{
+		Total: totalUser,
+	}
+	s.logger.Info().Str("id", id).Msg("user count by id success")
 	return resp, nil
 }

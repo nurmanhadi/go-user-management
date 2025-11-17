@@ -48,3 +48,11 @@ func (h *UserHandler) UserGetById(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Success(w, 200, result, r.URL.Path)
 }
+func (h *UserHandler) UserCountById(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	result, err := h.userService.UserCountById(id)
+	if err != nil {
+		panic(err)
+	}
+	response.Success(w, 200, result, r.URL.Path)
+}

@@ -186,7 +186,7 @@ go build -o bin/user-service cmd/main.go
 
 ### Service Get User by slice Id
 
-**Endpoint:** `GET /api/users/services/ids`
+**Endpoint:** `PUT /api/users/services/ids`
 
 **Request Body:**
 

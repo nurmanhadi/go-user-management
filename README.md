@@ -184,6 +184,41 @@ go build -o bin/user-service cmd/main.go
 - `404` - Not Found (User not found)
 - `500` - Internal Server Error
 
+### Service Get User by slice Id
+
+**Endpoint:** `GET /api/users/services/ids`
+
+**Request Body:**
+
+```json
+{
+  "ids": [1,2,3]
+}
+```
+
+**Response Body:**
+
+```json
+{
+  "data": [
+    {
+      "id": 3,
+      "username": "test12",
+      "name": {
+        "first_name": null,
+        "last_name": null
+      },
+      "avatar_url": null,
+    }
+  ],
+  "path": "/api/users/services/ids"
+}
+```
+
+**Response Codes:**
+- `200` - OK (User found and returned)
+- `500` - Internal Server Error
+
 ### Service Count User by Id
 
 **Endpoint:** `GET /api/users/services/count/{id}`

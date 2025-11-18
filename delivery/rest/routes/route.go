@@ -18,6 +18,7 @@ func (r *Router) New() {
 			users.Get("/{username}", r.UserHandler.UserGetByUsername)
 
 			users.Route("/services", func(services chi.Router) {
+				services.Get("/ids", r.UserHandler.UserGetBySliceId)
 				services.Get("/count/{id}", r.UserHandler.UserCountById)
 				services.Get("/{id}", r.UserHandler.UserGetById)
 			})

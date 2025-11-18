@@ -15,6 +15,9 @@ type UserUpdateRequest struct {
 	Bio         *string       `json:"bio" validate:"omitempty,max=500"`
 	Description *string       `json:"description" validate:"omitempty"`
 }
+type UserGetBySliceIdRequest struct {
+	Ids []int64 `json:"ids" validate:"require"`
+}
 type UserResponse struct {
 	ID           int64            `json:"id"`
 	AuthID       string           `json:"auth_id"`
@@ -28,10 +31,10 @@ type UserResponse struct {
 	UpdatedAt    time.Time        `json:"updated_at"`
 }
 type UserMinimalResponse struct {
-	ID        int64     `json:"id"`
-	Username  string    `json:"username"`
+	ID        int64    `json:"id"`
+	Username  string   `json:"username"`
 	Name      Username `json:"name"`
-	AvatarURL *string   `json:"avatar_url"`
+	AvatarURL *string  `json:"avatar_url"`
 }
 type UserCountResponse struct {
 	Total int64 `json:"total"`

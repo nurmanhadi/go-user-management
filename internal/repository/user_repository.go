@@ -34,6 +34,14 @@ func (r *UserRepository) FindById(id int64) (*entity.User, error) {
 	}
 	return user, nil
 }
+func (r *UserRepository) FindBySliceId(ids []int64) ([]entity.User, error) {
+	var users []entity.User
+	err := r.db.Where("id IN ?", ids).Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
 func (r *UserRepository) CountByEmail(email string) (int64, error) {
 	var count int64
 	err := r.db.Model(&entity.User{}).Where("email = ?", email).Count(&count).Error

@@ -56,3 +56,15 @@ func (h *UserHandler) UserCountById(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Success(w, 200, result, r.URL.Path)
 }
+func (h *UserHandler) UserGetBySliceId(w http.ResponseWriter, r *http.Request) {
+	request := new(dto.UserGetBySliceIdRequest)
+	if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+		fmt.Println(err.Error())
+		panic(response.Except(http.StatusBadRequest, "failed decode body to json"))
+	}
+	result, err := h.userService.UserGetBySliceId(request)
+	if err != nil {
+		panic(err)
+	}
+	response.Success(w, 200, result, r.URL.Path)
+}

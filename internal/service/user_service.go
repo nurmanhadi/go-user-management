@@ -175,6 +175,48 @@ func (s *UserService) UserGetByUsername(username string) (*dto.UserResponse, err
 	s.logger.Info().Str("username", username).Msg("user get by username success")
 	return resp, nil
 }
+func (s *UserService) UserGetBySliceId(request *dto.UserGetBySliceIdRequest) ([]dto.UserMinimalResponse, error) {
+	users, err := s.userRepository.FindBySliceId(request.Ids)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed find by id to database")
+		return nil, err
+	}
+	resp := make([]dto.UserMinimalResponse, 0, len(users))
+	if len(users) != 0 {
+		for _, x := range users {
+			resp = append(resp, dto.UserMinimalResponse{
+				ID:       x.ID,
+				Username: x.Username,
+				Name: dto.Username{
+					FirstName: x.FirstName,
+					LastName:  x.LastName,
+				},
+				AvatarURL: x.AvatarURL,
+			})
+		}
+	}
+
+	s.logger.Info().Str("total_user", strconv.Itoa(len(users))).Msg("user get by slice id success")
+	return resp, nil
+}
+func (s *UserService) UserCountById(id string) (*dto.UserCountResponse, error) {
+	newId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed parse string to int64")
+		return nil, err
+	}
+	totalUser, err := s.userRepository.CountById(newId)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed count by id to database")
+		return nil, err
+	}
+
+	resp := &dto.UserCountResponse{
+		Total: totalUser,
+	}
+	s.logger.Info().Str("id", id).Msg("user count by id success")
+	return resp, nil
+}
 func (s *UserService) UserGetById(id string) (*dto.UserMinimalResponse, error) {
 	newId, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
@@ -200,23 +242,5 @@ func (s *UserService) UserGetById(id string) (*dto.UserMinimalResponse, error) {
 		AvatarURL: user.AvatarURL,
 	}
 	s.logger.Info().Str("id", id).Msg("user get by id success")
-	return resp, nil
-}
-func (s *UserService) UserCountById(id string) (*dto.UserCountResponse, error) {
-	newId, err := strconv.ParseInt(id, 10, 64)
-	if err != nil {
-		s.logger.Error().Err(err).Msg("failed parse string to int64")
-		return nil, err
-	}
-	totalUser, err := s.userRepository.CountById(newId)
-	if err != nil {
-		s.logger.Error().Err(err).Msg("failed count by id to database")
-		return nil, err
-	}
-
-	resp := &dto.UserCountResponse{
-		Total: totalUser,
-	}
-	s.logger.Info().Str("id", id).Msg("user count by id success")
 	return resp, nil
 }
